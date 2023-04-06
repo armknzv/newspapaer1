@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %} Account - {{ request.user.username }} {% endblock title %}
+
+{% block content %}
+    <h1>Редактирование профиля</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Редактировать">
+</form>
+
+{% if is_not_author %}
+    <button> <a href="/account/upgrade/"> Стать автором</a> </button>
+{% else %}
+    <br>
+    <p>Вы имеете статус Автор</p>
+{% endif %}
+{% endblock content %}
