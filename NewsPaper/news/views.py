@@ -1,9 +1,10 @@
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
-from .models import Post
+from .models import Post, Category, SubscribedUsersCategory
 from .filters import PostFilter
 from .forms import PostForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.shortcuts import redirect
 
 
 class Posts(ListView):
@@ -32,6 +33,14 @@ class PostDetail(DetailView):
     template_name = 'news/post_detail.html'
     context_object_name = 'post'
 
+    def get_context_data(self, **kwargs):
+        context = super(PostDetail, self).get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context['user_category'] = Category.objects.filter(subscribed_users=self.request.user)
+        else:
+            context['user_category'] = None
+        return context
+
 
 class PostCreateViews(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     permission_required = 'news.add_post'
@@ -54,3 +63,12 @@ class PostUpdateViews(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
         return Post.objects.get(pk=id)
+
+
+def subscription(request):
+    category_id = request.GET.get('category_id')
+    category = Category.objects.get(id=category_id)
+    if not category.subscribed_users.filter(email=request.user.email).exists():
+        user = request.user
+        SubscribedUsersCategory.objects.create(subscribed_users=user, category=category)
+    return redirect('personal_area')

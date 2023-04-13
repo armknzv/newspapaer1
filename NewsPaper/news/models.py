@@ -36,6 +36,7 @@ class Author(models.Model):
 # Модель категорий для систематизации статей и новостей
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
+    subscribed_users = models.ManyToManyField(User, through='SubscribedUsersCategory')
 
     class Meta:
         verbose_name = 'Категория'
@@ -45,8 +46,6 @@ class Category(models.Model):
         return f'Категория: {self.name}'
 
 
-# Модель Статьи(или новости) с методами like и dislike для изменения рейтинга статьи
-# Метод preview показывает первые 124 символа статьи
 class Post(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='posts')
     post_or_news = models.CharField(max_length=4, choices=CHOICES_POST_NEWS, default='POST')
@@ -83,6 +82,10 @@ class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
+
+class SubscribedUsersCategory(models.Model):
+    subscribed_users = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 # Модель комментария с методами like и dislike для изменения рейтинга комментария
 class Comment(models.Model):

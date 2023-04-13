@@ -9,25 +9,18 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-j=0k&ixqg%z)w3ijoqj4xibn1d@k#6p==u=r_=9)!un1y8t8fn'
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
 
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -38,15 +31,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.flatpages',
-    'news',
+    'news.apps.NewsConfig',
     'django_filters',
-    'accounts',
+    'accounts.apps.AccountsConfig',
+    'mail_sender',
 
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     # ... include the providers you want to enable:
     'allauth.socialaccount.providers.google',
+
+    'django_apscheduler',
 ]
 
 SITE_ID = 1
@@ -83,9 +79,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'NewsPaper.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -93,9 +86,6 @@ DATABASES = {
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -113,9 +103,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -127,20 +114,18 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
+
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_URL = '/static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
+
     'django.contrib.auth.backends.ModelBackend',
-    # `allauth` specific authentication methods, such as login by e-mail
+
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
@@ -155,12 +140,10 @@ ACCOUNT_EMAIL_VERIFICATION = None
 ACCOUNT_FORMS = {'signup': 'accounts.forms.BasicSignupForm'}
 
 
-# Provider specific settings
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
-        # For each OAuth based provider, either add a ``SocialApp``
-        # (``socialaccount`` app) containing the required client
-        # credentials, or list them here:
+
         'APP': {
             'client_id': '479147659114-eofbjjhdj20h7qmojmnnfra01eipipgk.apps.googleusercontent.com',
             'secret': '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',
@@ -168,3 +151,22 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = True
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+MANAGERS = [
+    ('Artem', '090090999@mail.ru'),
+]
+
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+
+
+APSCHEDULER_RUN_NOW_TIMEOUT = 25
