@@ -15,7 +15,13 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+
+
+
+
 SECRET_KEY = 'django-insecure-j=0k&ixqg%z)w3ijoqj4xibn1d@k#6p==u=r_=9)!un1y8t8fn'
+
+
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -39,10 +45,9 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    # ... include the providers you want to enable:
+
     'allauth.socialaccount.providers.google',
 
-    'django_apscheduler',
 ]
 
 SITE_ID = 1
@@ -79,12 +84,17 @@ TEMPLATES = [
 WSGI_APPLICATION = 'NewsPaper.wsgi.application'
 
 
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+
+
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -103,6 +113,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -115,17 +127,17 @@ USE_TZ = True
 
 
 
+
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_URL = '/static/'
+
 
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTHENTICATION_BACKENDS = [
-
     'django.contrib.auth.backends.ModelBackend',
-
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
@@ -156,17 +168,22 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = ''
+
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
-
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 MANAGERS = [
     ('Artem', '090090999@mail.ru'),
 ]
 
-
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 
 
 APSCHEDULER_RUN_NOW_TIMEOUT = 25
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

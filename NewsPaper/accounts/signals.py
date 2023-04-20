@@ -21,5 +21,6 @@ def notify_managers_posts(sender, instance, created, **kwargs):
         subject=title,
         message=message,
         from_email=settings.SERVER_EMAIL,
-        recipient_list=[instance.email]
+        recipient_list=[instance.email],
+
     )
